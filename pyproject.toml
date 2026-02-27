@@ -1,0 +1,8 @@
+[project]
+name = "llm-evaluation-platform"
+version = "0.1.0"
+description = "Service layer orchestrating llm-evaluation-framework"
+requires-python = ">=3.10"
+
+[tool.setuptools.packages.find]
+where = ["."]
