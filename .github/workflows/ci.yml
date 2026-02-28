@@ -11,15 +11,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout platform repository
         uses: actions/checkout@v3
+
+      - name: Checkout core repository
+        uses: actions/checkout@v3
+        with:
+          repository: pradeepkumar-ai-byte/llm-evaluation-framework
+          path: llm-evaluation-framework
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
+      - name: Install core
+        run: |
+          pip install -e llm-evaluation-framework
+
+      - name: Install platform dependencies
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
