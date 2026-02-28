@@ -1,3 +1,6 @@
 transformers
 torch
 llm-evaluation-framework
+fastapi
+uvicorn
+pydantic
