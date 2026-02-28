@@ -10,7 +10,9 @@ class EvaluationService:
 
     def run(self, request: GenerationInput):
 
+        # Lazy initialization of model runner
         runner = ModelRunner(request.model)
+
         generation = runner.run(request)
 
         return self._evaluator.evaluate(generation)
