@@ -5,6 +5,7 @@ from orchestration.service import EvaluationService
 
 from api.schemas import EvaluationRequest, EvaluationResponse
 from api.auth import validate_api_key
+from api.database import store_result, get_leaderboard
 
 
 app = FastAPI(title="LLM Evaluation Service")
@@ -26,7 +27,14 @@ def evaluate(
 
     result = service.run(generation_input)
 
+    experiment_id = store_result(result.model, result.report)
+
     return EvaluationResponse(
         model=result.model,
-        report=result.report
+        report=result.report + f"\n\nExperiment ID: {experiment_id}"
     )
+
+
+@app.get("/leaderboard")
+def leaderboard(role: str = Depends(validate_api_key)):
+    return get_leaderboard()
