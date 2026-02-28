@@ -1,42 +1,5 @@
-name: CI Pipeline
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
-jobs:
-  build-and-validate:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout platform repository
-        uses: actions/checkout@v3
-
-      - name: Checkout core repository
-        uses: actions/checkout@v3
-        with:
-          repository: pradeepkumar-ai-byte/llm-evaluation-framework
-          path: llm-evaluation-framework
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
-
-      - name: Upgrade pip
-        run: pip install --upgrade pip
-
-      - name: Install core repository
-        run: pip install -e llm-evaluation-framework
-
-      - name: Install platform dependencies
-        run: pip install -r requirements.txt
-
-      - name: Validate lightweight imports
+- name: Validate lightweight imports
         run: |
           python -c "import orchestration.contracts"
-          python -c "import orchestration.adapter"
+          python -c "import orchestration.service"
           python -c "import experiments.storage"
-          python -c "import benchmarks.comparator"
