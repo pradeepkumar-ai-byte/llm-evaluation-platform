@@ -1,13 +1,14 @@
 import json
 import tempfile
 from pathlib import Path
+from typing import Dict, Any
 
 from llm_eval.config import Config
 from llm_eval.validation import load_and_validate_dataset
 from llm_eval.reporting import generate_report
 
 from orchestration.adapter import to_core_schema
-from orchestration.contracts import GenerationOutput, EvaluationOutput
+from orchestration.contracts import GenerationOutput
 
 
 class CoreEvaluator:
@@ -15,7 +16,7 @@ class CoreEvaluator:
     def __init__(self):
         self._config = Config()
 
-    def evaluate(self, generation: GenerationOutput) -> EvaluationOutput:
+    def evaluate(self, generation: GenerationOutput) -> Dict[str, Any]:
 
         dataset = to_core_schema(generation)
 
@@ -28,7 +29,19 @@ class CoreEvaluator:
 
         tmp_path.unlink(missing_ok=True)
 
-        return EvaluationOutput(
-            model=generation.model,
-            report=report
-        )
+        # Extract structured metrics directly from validated dataset
+        scores = [
+            sum(item["scores"].values()) / len(item["scores"])
+            for item in validated
+        ]
+
+        mean_score = sum(scores) / len(scores) if scores else 0.0
+
+        return {
+            "model": generation.model,
+            "report": report,
+            "metrics": {
+                "mean_score": round(mean_score, 4),
+                "num_samples": len(scores)
+            }
+        }
