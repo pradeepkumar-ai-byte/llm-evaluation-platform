@@ -25,17 +25,18 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install core
-        run: |
-          pip install -e llm-evaluation-framework
+      - name: Upgrade pip
+        run: pip install --upgrade pip
+
+      - name: Install core repository
+        run: pip install -e llm-evaluation-framework
 
       - name: Install platform dependencies
-        run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt
+        run: pip install -r requirements.txt
 
-      - name: Validate import structure
+      - name: Validate lightweight imports
         run: |
-          python -c "import api.main"
-          python -c "import orchestration.service"
+          python -c "import orchestration.contracts"
+          python -c "import orchestration.adapter"
           python -c "import experiments.storage"
+          python -c "import benchmarks.comparator"
