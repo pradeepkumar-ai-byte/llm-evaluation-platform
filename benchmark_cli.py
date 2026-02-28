@@ -9,16 +9,15 @@ from reports.exporter import export_json, export_markdown
 
 
 def main():
-
     parser = argparse.ArgumentParser(
-        description="Run structured LLM benchmark"
+        description="Run structured LLM benchmark with experiment tracking"
     )
 
     parser.add_argument(
         "--dataset",
         type=str,
         required=True,
-        help="Path to benchmark prompt dataset (JSON list)"
+        help="Path to benchmark dataset (JSON list of prompts)"
     )
 
     parser.add_argument(
@@ -45,7 +44,7 @@ def main():
         result = runner.run(
             model=model,
             prompts=prompts,
-            max_tokens=args.max_tokens
+            max_tokens=args.max_tokens,
         )
         results.append(result)
 
@@ -54,14 +53,15 @@ def main():
     run_id = register_run(
         dataset=args.dataset,
         models=args.models,
-        results=comparison
+        results=comparison,
     )
 
     export_json(run_id, comparison)
     export_markdown(run_id, comparison)
 
-    print("Benchmark Completed")
+    print("\nBenchmark Completed")
     print("Run ID:", run_id)
+    print("Reports saved in /reports")
     print(comparison)
 
 
